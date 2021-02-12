@@ -22,7 +22,7 @@ public class LateAStar extends AbstractAlgorithm {
 	// Documentation in base class.
 	@Override
 	public StateOnBoard findSolution() {
-		long totalSize = 0, counter = 0, totalInsertTime = 0, insertedStates = 0;
+		long totalSize = 0, totalRemovedTime = 0, totalInsertTime = 0, insertedStates = 0;
 
 		List<StateOnBoard> closedList = new ArrayList<>();
 		PriorityQueue<StateOnBoard> openList = new PriorityQueue<StateOnBoard>(10,
@@ -32,7 +32,9 @@ public class LateAStar extends AbstractAlgorithm {
 
 
 		while (!openList.isEmpty()) {
+			long start = System.currentTimeMillis();
 			StateOnBoard currentState = openList.remove();
+			totalRemovedTime += System.currentTimeMillis() - start;
 
 			if (closedList.contains(currentState))
 				continue;
@@ -43,6 +45,7 @@ public class LateAStar extends AbstractAlgorithm {
 				currentState.addDevelopedNodes(-currentState.getDevelopedNodesNum() + super.developedNode);
 				System.out.println("Inserted States= " + insertedStates);
 				System.out.println("Total Insert time= " + totalInsertTime);
+				System.out.println("Total Removed time= " + totalRemovedTime);
 				System.out.println("open list avg size= " + totalSize / insertedStates);
 				return currentState;
 			}
@@ -61,6 +64,7 @@ public class LateAStar extends AbstractAlgorithm {
 		}
 		System.out.println("Inserted States= " + insertedStates);
 		System.out.println("Total Insert time= " + totalInsertTime);
+		System.out.println("Total Removed time= " + totalRemovedTime);
 		System.out.println("open list avg size= " + totalSize / insertedStates);
 		return null; // not found.
 	}

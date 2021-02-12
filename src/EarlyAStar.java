@@ -21,7 +21,7 @@ public class EarlyAStar extends AbstractAlgorithm {
     @Override
     public StateOnBoard findSolution() {
         int u = 1000000000;
-        long totalSize = 0, counter = 0, totalInsertTime = 0, removedStates = 0, insertedStates = 0;
+        long totalSize = 0, totalRemovedTime = 0, totalInsertTime = 0, removedStates = 0, insertedStates = 0;
         StateOnBoard best_state = null;
         List<StateOnBoard> closedList = new ArrayList<>();
         PriorityQueue<StateOnBoard> openList = new PriorityQueue<StateOnBoard>(10,
@@ -42,7 +42,10 @@ public class EarlyAStar extends AbstractAlgorithm {
             super.currentBoardState = currentState;
             Queue<StateOnBoard> childes = playOneStep();
             while (!childes.isEmpty()) {
+                long start = System.currentTimeMillis();
                 StateOnBoard s = childes.remove();
+                totalRemovedTime += System.currentTimeMillis() - start;
+
                 if (s.getCurrentBoardState().equals(super.goalBoardState)) {
                     s.addCost((int) (-currentState.getCost() + g(currentState)));
                     s.addDevelopedNodes(-currentState.getDevelopedNodesNum() + super.developedNode);
@@ -66,6 +69,7 @@ public class EarlyAStar extends AbstractAlgorithm {
         }
         System.out.println("Inserted States= " + insertedStates);
         System.out.println("Total Insert time= " + totalInsertTime);
+        System.out.println("Total Removed time= " + totalRemovedTime);
         System.out.println("open list avg size= " + (float) totalSize/insertedStates);
         return best_state; // not found.
     }
